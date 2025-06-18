@@ -5,7 +5,6 @@ use std::{
 
 use crossbeam_utils::CachePadded;
 use haphazard::{AtomicPtr as HpAtomicPtr, HazardPointer};
-use log::trace;
 
 const BUFFER_SIZE: usize = 1024;
 
@@ -49,12 +48,10 @@ impl<T> FAAAQueue<T> {
     pub fn enqueue(&self, item: T, hp: &mut HazardPointer) {
         let item_ptr = Box::into_raw(Box::new(item));
         loop {
-            trace!("Loading tail now.");
             let ltail = self.tail.safe_load(hp).unwrap();
             let idx = ltail.enqueue_index.fetch_add(1, SeqCst);
             if idx > BUFFER_SIZE - 1 {
                 // This node is full.
-                trace!("Node is full");
                 if ltail as *const _ != self.tail.load_ptr() {
                     continue;
                 }
@@ -87,16 +84,12 @@ impl<T> FAAAQueue<T> {
                 }
                 continue;
             }
-            trace!("Node not full");
             let item_null: *mut T = null_mut();
-            trace!("Attempting cas to add item.");
             if ltail.array[idx]
                 .compare_exchange(item_null, item_ptr, SeqCst, SeqCst)
                 .is_ok()
             {
-                trace!("Succeeded");
                 hp.reset_protection();
-                trace!("returning now");
                 return;
             }
         }
@@ -146,7 +139,6 @@ impl<T> FAAAQueue<T> {
 }
 impl<T> Drop for FAAAQueue<T> {
     fn drop(&mut self) {
-        trace!("Starting drop FAAArrayQueue");
         let head: Box<Node<T>> = unsafe { Box::from_raw(self.head.load_ptr()) };
         let mut next = head.next;
 
@@ -161,14 +153,11 @@ impl<T> Drop for FAAAQueue<T> {
 
             next = node.next;
         }
-        trace!("Done dropping");
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::sync::atomic::AtomicI32;
-
     use log::info;
 
     use super::*;
