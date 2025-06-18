@@ -129,7 +129,7 @@ impl<T> FAAAQueue<T> {
         hp.reset_protection();
         None
     }
-    fn new() -> Self {
+    pub fn new() -> Self {
         let start_node = Box::into_raw(Box::new(Node::empty()));
         Self {
             head: unsafe { HpAtomicPtr::new(start_node) },
@@ -137,6 +137,13 @@ impl<T> FAAAQueue<T> {
         }
     }
 }
+
+impl<T> Default for FAAAQueue<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T> Drop for FAAAQueue<T> {
     fn drop(&mut self) {
         let head: Box<Node<T>> = unsafe { Box::from_raw(self.head.load_ptr()) };
@@ -158,25 +165,18 @@ impl<T> Drop for FAAAQueue<T> {
 
 #[cfg(test)]
 mod tests {
-    use log::info;
 
     use super::*;
 
     #[test]
     fn create_faaaq_queue() {
-        let _ = env_logger::builder().is_test(true).try_init();
-        info!("Creating queue");
         let q: FAAAQueue<i32> = FAAAQueue::new();
-        info!("Done creating queue");
         let mut hp = HazardPointer::new();
-        info!("Enqueueing now");
         q.enqueue(1, &mut hp);
-        info!("Enqueue done");
         assert_eq!(q.dequeue(&mut hp), Some(1));
     }
     #[test]
     fn test_almost_full() {
-        let _ = env_logger::builder().is_test(true).try_init();
         let q: FAAAQueue<usize> = FAAAQueue::new();
         let mut hp = HazardPointer::new();
         for i in 0..BUFFER_SIZE {
@@ -188,7 +188,6 @@ mod tests {
     }
     #[test]
     fn test_double_buf_size() {
-        let _ = env_logger::builder().is_test(true).try_init();
         let q: FAAAQueue<usize> = FAAAQueue::new();
         let mut hp = HazardPointer::new();
         for i in 0..BUFFER_SIZE * 2 {
