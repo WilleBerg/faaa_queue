@@ -42,7 +42,8 @@ impl<T> Node<T> {
     }
 }
 impl<T> FAAAQueue<T> {
-    fn enqueue(&self, item: T, hp: &mut HazardPointer) {
+    // TODO: Change so the user does not need to handle hazard pointers.
+    pub fn enqueue(&self, item: T, hp: &mut HazardPointer) {
         let item_ptr = Box::into_raw(Box::new(item));
         loop {
             trace!("Loading tail now.");
@@ -65,7 +66,6 @@ impl<T> FAAAQueue<T> {
                     // which is a copy of item_ptr?
                     unsafe { drop(Box::from_raw(new_node)) };
                 } else {
-                    // Help other thread enqueue?
                     let _ = unsafe { self.tail.compare_exchange_ptr(ltail as *const _ as *mut _, lnext) };
                 }
                 continue;
@@ -81,7 +81,7 @@ impl<T> FAAAQueue<T> {
             }
         }
     }
-    fn dequeue(&self, hp: &mut HazardPointer) -> Option<T> {
+    pub fn dequeue(&self, hp: &mut HazardPointer) -> Option<T> {
         loop {
             let lhead = self.head.safe_load(hp).unwrap();
             if lhead.dequeue_index.load(SeqCst) >= lhead.enqueue_index.load(SeqCst)
