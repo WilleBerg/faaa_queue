@@ -1,0 +1,12 @@
+[package]
+name = "faaa_queue"
+version = "0.1.0"
+edition = "2024"
+description = "A Rust implementation of the FAAArrayQueue"
+license = "MIT OR Apache-2.0"
+
+[dependencies]
+crossbeam-utils = "0.8.21"
+env_logger = "0.11.8"
+haphazard = "0.1.8"
+log = "0.4.27"
