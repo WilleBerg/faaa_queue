@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [0.1.4] - 2025-06-19
+### Fixed
+- Changed to raw link for image.
+
 ## [0.1.3] - 2025-06-18
 ### Added
 - More information in the readme.
