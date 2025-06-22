@@ -1,5 +1,9 @@
 # ChangeLog
 
+## [1.1.4] - 2025-06-22
+### Changed
+- User no longer provides the hazard pointer.
+
 ## [0.1.4] - 2025-06-19
 ### Fixed
 - Changed to raw link for image.
