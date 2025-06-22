@@ -18,7 +18,7 @@ The faaa_queue was benchmarked using the [rusty-benchmarking-framework](https://
 
 It performs a lot better than all other concurrent queues benchmarked after 4 threads.
 
-![Benchmark results](https://github.com/WilleBerg/faaa_queue/raw/d01c59aa9646256f3e1f7d4253b214707f0d31f6/images/six_subplot_comparison.png)
+![Benchmark results](https://raw.githubusercontent.com/WilleBerg/faaa_queue/refs/heads/main/images/six_subplot_comparison.png)
 
 Here are results from three different benchmarks using varying tau (τ) values to control the enqueue/dequeue ratio. 
 

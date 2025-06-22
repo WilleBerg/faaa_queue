@@ -1,6 +1,6 @@
 # ChangeLog
 
-## [1.1.4] - 2025-06-22
+## [1.0.0] - 2025-06-22
 ### Changed
 - User no longer provides the hazard pointer.
 

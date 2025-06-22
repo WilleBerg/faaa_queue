@@ -1,8 +1,8 @@
 [package]
 name = "faaa_queue"
-version = "0.1.4"
+version = "1.0.0"
 edition = "2024"
-description = "A Rust implementation of the FAAArrayQueue"
+description = "A really fast unbounded lock-free concurrent queue."
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/WilleBerg/faaa_queue"
 homepage = "https://github.com/WilleBerg/faaa_queue"
